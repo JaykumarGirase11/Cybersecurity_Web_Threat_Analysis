@@ -48,7 +48,7 @@ A comprehensive cybersecurity threat analysis platform featuring advanced machin
 ```
 📁 Cybersecurity_Web_Threat_Analysis/
 ├── 🎯 main.py                     # Main system orchestrator
-├── 📊 frontend/                   # Enhanced dashboard applications
+├── 📊 dashboard/                   # Enhanced dashboard applications
 │   ├── app.py                     # Streamlit dashboard with 8+ tabs
 │   ├── simple_app.py              # Dash dashboard with real-time features
 │   ├── components.py              # Enhanced reusable UI components
@@ -120,7 +120,7 @@ python main.py --create-data
 
 ## 🎯 **Enhanced Dashboard Features**
 
-### **📊 Streamlit Dashboard (frontend/app.py)**
+### **📊 Streamlit Dashboard (dashboard/app.py)**
 - **🌍 Global Intelligence**: Interactive world maps + geographic threat analysis
 - **📈 Traffic Analytics**: Time-based patterns and 3D scatter plots
 - **🔍 Threat Analysis**: Critical threat sources and response codes
