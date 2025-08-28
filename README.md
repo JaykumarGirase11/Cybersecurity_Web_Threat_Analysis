@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🛡️ Cybersecurity Web Threat Analysis Platform
 
 ## 🚀 Enhanced AI-Powered Real-Time Threat Detection System
@@ -355,3 +356,6 @@ python main.py --mode full
 ---
 
 *Built with ❤️ for cybersecurity professionals and data scientists*
+=======
+# Cybersecurity_Web_Threat_Analysis
+>>>>>>> 747609297432f1f8b2bd11ca01bbfe95911b7fb1
