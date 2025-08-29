@@ -1618,40 +1618,70 @@ def main():
         col1, col2 = st.columns(2)
         
         with col1:
-            # Scatter plot analysis
+            # Scatter plot analysis with error handling
             sample_df = filtered_df.sample(min(500, len(filtered_df))) if len(filtered_df) > 0 else filtered_df
             
-            if not sample_df.empty:
-                fig_scatter = px.scatter(
-                    sample_df,
-                    x='bytes_in',
-                    y='bytes_out',
-                    color='threat_level',
-                    size='total_bytes',
-                    hover_data=['src_ip_country_code', 'protocol'],
-                    title="🚀 Traffic Analysis: Bytes In vs Bytes Out",
-                    color_discrete_map={
-                        'Low': '#00ff41',
-                        'Medium': '#ffaa00',
-                        'High': '#ff6600',
-                        'Critical': '#ff3030'
-                    },
-                    template='plotly_dark',
-                    log_x=True,
-                    log_y=True
-                )
+            if not sample_df.empty and all(col in sample_df.columns for col in ['bytes_in', 'bytes_out', 'threat_level']):
+                # Clean data and handle missing values
+                sample_df = sample_df.dropna(subset=['bytes_in', 'bytes_out', 'threat_level'])
                 
-                fig_scatter.update_layout(
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#ffffff', family='Rajdhani'),
-                    title_font=dict(size=18, color='#00f5ff'),
-                    height=500
-                )
+                # Ensure positive values for log scale
+                sample_df = sample_df[(sample_df['bytes_in'] > 0) & (sample_df['bytes_out'] > 0)]
                 
-                st.plotly_chart(fig_scatter, use_container_width=True)
+                if not sample_df.empty:
+                    try:
+                        fig_scatter = px.scatter(
+                            sample_df,
+                            x='bytes_in',
+                            y='bytes_out',
+                            color='threat_level',
+                            size='total_bytes',
+                            hover_data=['src_ip_country_code', 'protocol'],
+                            title="🚀 Traffic Analysis: Bytes In vs Bytes Out",
+                            color_discrete_map={
+                                'Low': '#00ff41',
+                                'Medium': '#ffaa00',
+                                'High': '#ff6600',
+                                'Critical': '#ff3030'
+                            },
+                            template='plotly_dark',
+                            log_x=True,
+                            log_y=True
+                        )
+                        
+                        fig_scatter.update_layout(
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            paper_bgcolor='rgba(0,0,0,0)',
+                            font=dict(color='#ffffff', family='Rajdhani'),
+                            title_font=dict(size=18, color='#00f5ff'),
+                            height=500
+                        )
+                        
+                        st.plotly_chart(fig_scatter, use_container_width=True)
+                    except Exception as e:
+                        st.warning(f"Unable to create scatter plot: Data visualization requires valid numeric data")
+                        # Fallback: Simple bar chart
+                        threat_counts = sample_df['threat_level'].value_counts()
+                        fig_bar = px.bar(
+                            x=threat_counts.index,
+                            y=threat_counts.values,
+                            title="🛡️ Threat Level Distribution",
+                            color=threat_counts.values,
+                            color_continuous_scale=['#00ff41', '#ffaa00', '#ff6600', '#ff3030'],
+                            template='plotly_dark'
+                        )
+                        fig_bar.update_layout(
+                            plot_bgcolor='rgba(0,0,0,0)',
+                            paper_bgcolor='rgba(0,0,0,0)',
+                            font=dict(color='#ffffff', family='Rajdhani'),
+                            title_font=dict(size=18, color='#00f5ff'),
+                            height=500
+                        )
+                        st.plotly_chart(fig_bar, use_container_width=True)
+                else:
+                    st.warning("No valid data available for scatter plot after filtering.")
             else:
-                st.warning("No data available for the selected filters.")
+                st.warning("Required columns not available for scatter plot analysis.")
         
         with col2:
             # Day of week analysis
